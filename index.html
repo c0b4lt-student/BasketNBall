@@ -12,19 +12,19 @@
     <div class="param-container">
       <div>
         <label>Numero maximum : </label>
-        <input id='max-ball-number' type="number" />
+        <input value="999" id='max-ball-number' type="number" />
       </div>
       <div>
         <label>Nombre de panniers : </label>
-        <input id='nb-basket'type="number" />
+        <input value='30' id='nb-basket'type="number" />
       </div>
       <div>
         <label>Contenance max pannier : </label>
-        <input id='basket-capacity' type="number" />
+        <input value='10' id='basket-capacity' type="number" />
       </div>
       <div>
         <label>Contenance max pannier utilisateur : </label>
-        <input type="number" />
+        <input value='100' id='user-basket-capacity' type="number" />
       </div>
       <input id="run-sim" type="button" value="Lancer simulation" />
     </div>
@@ -33,6 +33,8 @@
     </div>
     <div class="result-container">
       <p id="answer"></p>
+      <p id="full-win"></p>
+      <p id="single-win"></p>
     </div>
   </main>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

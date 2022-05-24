@@ -1,5 +1,7 @@
 $(document).ready(() => {
   let answer = $(`#answer`);
+  let fullWin = $('#full-win');
+  let singleWin = $('#single-win');
 
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -26,7 +28,6 @@ $(document).ready(() => {
     }
     return allBasket;
   } //Genere et retourne un tableau de panier remplis a l'aide de fillBasket;
-
   function printAllBaskets(allBasket, userBasket) {
     allBasket.forEach((basket, i) => {
       answer.append(`Pannier N°${i+1} : ${basket}<br>`);
@@ -34,16 +35,35 @@ $(document).ready(() => {
     answer.append(`Pannier de l'utilisateur : ${userBasket}`);
   } //Affiche la liste des panniers numérotés, dans une balise <p>
 
+  function isBasketContainUserBalls(basket, userBasket) {
+    let ballCounter = 0;
+
+    userBasket.forEach((userBall) => {
+      if (basket.find(basketBall => basketBall === userBall))
+        ballCounter++;
+    });
+    return ballCounter;
+  }
+
   function runSim() { //Executée par le click sur "lancer simulation";
-    answer.html('');
+    answer.html('Résultats des tirages : <br>');
+    singleWin.html(`Panniers avec une seule balle présente dans le pannier de l'utilisateur : <br>`);
+    fullWin.html(`Panniers avec toutes les balles présentent dans le pannier de l'utilisateur : <br>`);
     let maxBallNumber = parseInt($(`#max-ball-number`).val());
     let nbBasket = parseInt($(`#nb-basket`).val());
     let basketCapacity = parseInt($(`#basket-capacity`).val());
     let userBasketCapacity = parseInt($(`#user-basket-capacity`).val());
     let allBasket =  fillBaskets(nbBasket, basketCapacity, maxBallNumber);
-    let userBasket = fillBasket(userBasketCapacity, 999);
+    let userBasket = fillBasket(userBasketCapacity, maxBallNumber);
 
     printAllBaskets(allBasket, userBasket);
+    allBasket.forEach((basket, i) => {
+      let ballsCount = isBasketContainUserBalls(basket, userBasket);
+      if (ballsCount === 1)
+        singleWin.append(`Pannier n°${i + 1}, `);
+      if (ballsCount === basket.length)
+        fullWin.append(`Pannier n°${i + 1}, `);
+    })
   }
 
   $(`#run-sim`).click(() => {
