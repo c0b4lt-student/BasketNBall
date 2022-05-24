@@ -17,7 +17,7 @@ $(document).ready(() => {
       else
         basket.push(ball);
     }
-    return basket;
+    return basket.sort((a, b) => a - b);
   } //Remplis un pannier avec au maximum 'capacity' balles;
   function fillBaskets(nbBasket, basketCapacity, maxBallNumber) {
     let allBasket = [];
@@ -27,10 +27,11 @@ $(document).ready(() => {
     return allBasket;
   } //Genere et retourne un tableau de panier remplis a l'aide de fillBasket;
 
-  function printAllBaskets(allBasket) {
+  function printAllBaskets(allBasket, userBasket) {
     allBasket.forEach((basket, i) => {
       answer.append(`Pannier N°${i+1} : ${basket}<br>`);
-    })
+    });
+    answer.append(`Pannier de l'utilisateur : ${userBasket}`);
   } //Affiche la liste des panniers numérotés, dans une balise <p>
 
   function runSim() { //Executée par le click sur "lancer simulation";
@@ -39,9 +40,10 @@ $(document).ready(() => {
     let nbBasket = parseInt($(`#nb-basket`).val());
     let basketCapacity = parseInt($(`#basket-capacity`).val());
     let userBasketCapacity = parseInt($(`#user-basket-capacity`).val());
-
     let allBasket =  fillBaskets(nbBasket, basketCapacity, maxBallNumber);
-    printAllBaskets(allBasket);
+    let userBasket = fillBasket(userBasketCapacity, 999);
+
+    printAllBaskets(allBasket, userBasket);
   }
 
   $(`#run-sim`).click(() => {
