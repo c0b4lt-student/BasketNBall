@@ -6,7 +6,7 @@ $(document).ready(() => {
   } //Genere un nombre aléatoire >= 0 et < max;
 
   function fillBasket(capacity, maxBall) {
-    let load = getRandomInt(capacity + 1);
+    let load = getRandomInt(capacity) + 1;
     let basket = [];
 
     for(let i = 0; i < load; i++) {
