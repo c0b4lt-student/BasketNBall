@@ -1,26 +1,40 @@
+function getRandomInt(max) {
+  max = parseInt(max);
+  if (isNaN(max) || max <= 0)
+    return 0;
+  return Math.floor(Math.random() * max);
+} //Genere un nombre aleatoire >= 0 et < max;
+
+function fillBasket(capacity, maxBall) {
+  if (isNaN(capacity) || isNaN(maxBall))
+    return [-1];
+  if (capacity < maxBall) {
+    console.log(`Error, fillBasket : capacity can't be lesser than maxBall`);
+    return [-1];
+  }
+  if (capacity <= 0 || maxBall <= 0) {
+    console.log(`Error, fillBasket : capacity or maxBall should be bigger than 0`);
+    return [-1];
+  }
+  let load = getRandomInt(capacity) + 1;
+  let basket = [];
+
+  for(let i = 0; i < load; i++) {
+    let ball = getRandomInt(maxBall) + 1;
+
+    if (basket.find(element => element === ball))
+      i--;
+    else
+      basket.push(ball);
+  }
+  return basket.sort((a, b) => a - b);
+} //Remplit un panier avec au maximum 'capacity' balles;
+
 $(document).ready(() => {
   let answer = $(`#output`);
   let fullWin = $('#full-win');
   let singleWin = $('#single-win');
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  } //Genere un nombre aleatoire >= 0 et < max;
-
-  function fillBasket(capacity, maxBall) {
-    let load = getRandomInt(capacity) + 1;
-    let basket = [];
-
-    for(let i = 0; i < load; i++) {
-      let ball = getRandomInt(maxBall) + 1;
-
-      if (basket.find(element => element === ball))
-        i--;
-      else
-        basket.push(ball);
-    }
-    return basket.sort((a, b) => a - b);
-  } //Remplit un panier avec au maximum 'capacity' balles;
   function fillBaskets(nbBasket, basketCapacity, maxBallNumber) {
     let allBasket = [];
     for(let i = 0; i < nbBasket; i++) {
