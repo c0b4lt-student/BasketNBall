@@ -30,8 +30,32 @@ function fillBasket(capacity, maxBall) {
   return basket.sort((a, b) => a - b);
 } //Remplit un panier avec au maximum 'capacity' balles;
 
+function fillBaskets(nbBasket, basketCapacity, maxBallNumber) {
+  if (isNaN(basketCapacity) || isNaN(maxBallNumber))
+    return [-1];
+  if (maxBallNumber < basketCapacity) {
+    console.log(`Error, fillBaskets : maxBallNumber can't be lesser than basketCapacity`);
+    return [-1];
+  }
+  if (basketCapacity <= 0 || maxBallNumber <= 0) {
+    console.log(`Error, fillBaskets : basketCapacity or maxBallNumber should be bigger than 0`);
+    return [-1];
+  }
+  let allBasket = [];
+  for(let i = 0; i < nbBasket; i++) {
+    allBasket.push(fillBasket(basketCapacity, maxBallNumber));
+  }
+  return allBasket;
+} //Genere et retourne un tableau de paniers remplis a l'aide de fillBasket;
+
 function printAllBaskets(answer, allBasket, userBasket) {
   let is_error = false;
+
+  if (allBasket[0] === -1) {
+    is_error = true;
+    answer.html(`Erreur dans un panier, Verifiez vos paramètres ! <br>`);
+    return -1;
+  }
 
   allBasket.forEach((basket, i) => {
     if (basket[0] === -1) {
@@ -47,34 +71,40 @@ function printAllBaskets(answer, allBasket, userBasket) {
     return -1;
 } //Affiche la liste des paniers numerotes, dans une balise <p>
 
+function isBasketContainUserBalls(basket, userBasket) {
+  let ballCounter = 0;
+
+  userBasket.forEach((userBall) => {
+    if (basket.find(basketBall => basketBall === userBall))
+      ballCounter++;
+  });
+  return ballCounter;
+} //Compte combien de balles du panier "basket" sont presentes dans "userBasket";
+
+function printWinningBasket(singleWin, fullWin, allBasket, userBasket) {
+  if (allBasket[0] === -1 || userBasket[0] === -1) {
+    console.log(`Params errors no win !`);
+    return -1;
+  }
+  allBasket.forEach((basket, i) => {
+    let ballsCount = isBasketContainUserBalls(basket, userBasket);
+    if (ballsCount === 1) {
+      singleWin.append(`Panier n°${i + 1}, `);
+    }
+    if (ballsCount === basket.length) {
+      fullWin.append(`Panier n°${i + 1}, `);
+    }
+  });
+  if (singleWin.html().length > 0) //Clean output
+    singleWin.html(`${singleWin.html().slice(0, -2)}`);
+  if (fullWin.html().length > 0) //Clean output
+    fullWin.html(`${fullWin.html().slice(0, -2)}`);
+} //Affiche la liste des paniers gagnants;
+
 $(document).ready(() => {
   let answer = $(`#output`);
   let fullWin = $('#full-win');
   let singleWin = $('#single-win');
-
-  function fillBaskets(nbBasket, basketCapacity, maxBallNumber) {
-    let allBasket = [];
-    for(let i = 0; i < nbBasket; i++) {
-      allBasket.push(fillBasket(basketCapacity, maxBallNumber));
-    }
-    return allBasket;
-  } //Genere et retourne un tableau de paniers remplis a l'aide de fillBasket;
-
-  function printWinningBasket(allBasket, userBasket) {
-    allBasket.forEach((basket, i) => {
-      let ballsCount = isBasketContainUserBalls(basket, userBasket);
-      if (ballsCount === 1) {
-        singleWin.append(`Panier n°${i + 1}, `);
-      }
-      if (ballsCount === basket.length) {
-        fullWin.append(`Panier n°${i + 1}, `);
-      }
-    });
-    if (singleWin.html().length > 0) //Clean output
-      singleWin.html(`${singleWin.html().slice(0, -2)}`);
-    if (fullWin.html().length > 0) //Clean output
-      fullWin.html(`${fullWin.html().slice(0, -2)}`);
-  } //Affiche la liste des paniers gagnants;
 
   function isBasketContainUserBalls(basket, userBasket) {
     let ballCounter = 0;
@@ -97,8 +127,13 @@ $(document).ready(() => {
     let allBasket =  fillBaskets(nbBasket, basketCapacity, maxBallNumber);
     let userBasket = fillBasket(userBasketCapacity, maxBallNumber);
 
-    if (printAllBaskets(answer, allBasket, userBasket) !== -1)
-      printWinningBasket(allBasket, userBasket);
+    if (printAllBaskets(answer, allBasket, userBasket) === -1) {
+      singleWin.html(``);
+      fullWin.html(``);   
+      return -1;
+    }
+    else
+      printWinningBasket(singleWin, fullWin, allBasket, userBasket);
   }
 
   $(`#run-sim`).click(() => {
