@@ -8,8 +8,8 @@ function getRandomInt(max) {
 function fillBasket(capacity, maxBall) {
   if (isNaN(capacity) || isNaN(maxBall))
     return [-1];
-  if (capacity < maxBall) {
-    console.log(`Error, fillBasket : capacity can't be lesser than maxBall`);
+  if (maxBall < capacity) {
+    console.log(`Error, fillBasket : maxBall can't be lesser than capacity`);
     return [-1];
   }
   if (capacity <= 0 || maxBall <= 0) {
@@ -30,6 +30,23 @@ function fillBasket(capacity, maxBall) {
   return basket.sort((a, b) => a - b);
 } //Remplit un panier avec au maximum 'capacity' balles;
 
+function printAllBaskets(answer, allBasket, userBasket) {
+  let is_error = false;
+
+  allBasket.forEach((basket, i) => {
+    if (basket[0] === -1) {
+      is_error = true;
+      answer.html(`Erreur dans un panier, Verifiez vos paramètres ! <br>`);
+      return -1;
+    }
+    answer.append(`Panier N°${i+1} : ${basket}<br>`);
+  });
+  if (!is_error && userBasket[0] !== -1)
+    answer.append(`Panier de l'utilisateur : ${userBasket}`);
+  else
+    return -1;
+} //Affiche la liste des paniers numerotes, dans une balise <p>
+
 $(document).ready(() => {
   let answer = $(`#output`);
   let fullWin = $('#full-win');
@@ -42,12 +59,7 @@ $(document).ready(() => {
     }
     return allBasket;
   } //Genere et retourne un tableau de paniers remplis a l'aide de fillBasket;
-  function printAllBaskets(allBasket, userBasket) {
-    allBasket.forEach((basket, i) => {
-      answer.append(`Panier N°${i+1} : ${basket}<br>`);
-    });
-    answer.append(`Panier de l'utilisateur : ${userBasket}`);
-  } //Affiche la liste des paniers numerotes, dans une balise <p>
+
   function printWinningBasket(allBasket, userBasket) {
     allBasket.forEach((basket, i) => {
       let ballsCount = isBasketContainUserBalls(basket, userBasket);
@@ -85,8 +97,8 @@ $(document).ready(() => {
     let allBasket =  fillBaskets(nbBasket, basketCapacity, maxBallNumber);
     let userBasket = fillBasket(userBasketCapacity, maxBallNumber);
 
-    printAllBaskets(allBasket, userBasket);
-    printWinningBasket(allBasket, userBasket);
+    if (printAllBaskets(answer, allBasket, userBasket) !== -1)
+      printWinningBasket(allBasket, userBasket);
   }
 
   $(`#run-sim`).click(() => {
